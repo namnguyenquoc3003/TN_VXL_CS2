@@ -1,0 +1,108 @@
+C51 COMPILER V9.54   DS18B20                                                               01/26/2016 16:41:19 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN ds18b20.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE DS1820\ds18b20.c OPTIMIZE(8,SPEED) BROWSE INTVECTOR(0X2000) DEBUG OBJECT
+                    -EXTEND PRINT(.\ds18b20.lst) TABS(2) OBJECT(ds18b20.obj)
+
+line level    source
+
+   1          #include <regx52.h>
+   2          #include <DELAY\delay.h>
+   3          #include <LCD1602\lcd1602.h>
+   4          #include <DS1820\ds18b20.h>
+   5          
+   6          static bit presence;
+   7          //-------------------------------------------------
+   8          // Ham khoi tao DS18b20
+   9          //-------------------------------------------------
+  10          bit DS18B20_Init()
+  11          {
+  12   1           DQ = 1 ;      
+  13   1           delay_us(8);   
+  14   1           DQ = 0 ;     
+  15   1           delay_us(90) ;   
+  16   1           DQ = 1 ;       
+  17   1           delay_us(8) ;
+  18   1           presence = DQ ;    
+  19   1           delay_us(100) ;
+  20   1           DQ = 1 ;
+  21   1           return(presence) ; 
+  22   1      }
+  23          
+  24          //-------------------------------------------------
+  25          // Ham doc 1 byte tu DS18b20 ra ngoai
+  26          //-------------------------------------------------
+  27          unsigned char ds18b20_readbyte(void)
+  28          {
+  29   1      unsigned char i = 0 ;
+  30   1      unsigned char Data = 0 ;
+  31   1      for (i = 8 ; i > 0 ; i--)
+  32   1        {
+  33   2          DQ = 0 ;
+  34   2          Data >>= 1 ;
+  35   2          DQ = 1 ; 
+  36   2          if(DQ)
+  37   2           Data |= 0x80 ;
+  38   2          delay_us(4) ;
+  39   2        }
+  40   1        return (Data) ;
+  41   1      }
+  42          
+  43          //-------------------------------------------------
+  44          // Ham viet 1 byte vao DS18b20
+  45          //-------------------------------------------------
+  46          void ds18b20_writebyte(unsigned char Data)
+  47          {
+  48   1        unsigned char i = 0 ;
+  49   1        for (i = 8 ; i > 0 ; i--)
+  50   1        {
+  51   2          DQ = 0 ;
+  52   2          DQ = Data&0x01 ;
+  53   2          delay_us(5) ;
+  54   2          DQ = 1 ;
+C51 COMPILER V9.54   DS18B20                                                               01/26/2016 16:41:19 PAGE 2   
+
+  55   2          Data>>=1 ;
+  56   2        }
+  57   1      }
+  58          
+  59          //-------------------------------------------------
+  60          // Ham chuyen doi va tra ve gia tri nhiet do do duoc
+  61          //-------------------------------------------------
+  62          float ds18b20_readtemp(void)
+  63          {
+  64   1            float temp;
+  65   1            unsigned char a,b;
+  66   1            DS18B20_Init();                   // Khoi tao DS18b20
+  67   1            ds18b20_writebyte(0xCC) ;         // Cho phep VDK truy cap thang den cac lenh bo nho cua DS18b20
+  68   1            ds18b20_writebyte(0x44) ;         // Khoi dong qua trinh do va chuyen doi nhiet do ra so nhi phan
+  69   1            DS18B20_Init() ;
+  70   1            ds18b20_writebyte(0xCC) ;  
+  71   1            ds18b20_writebyte(0xBE) ;         // Cho phep doc du lieu tu bo nho DS18b20 ra ngoai
+  72   1        
+  73   1            a = ds18b20_readbyte(); 
+  74   1            temp=((float)(a&0x0f))/16;        // Lay phan thuc cua gia tri nhiet do
+  75   1            b = ds18b20_readbyte();         
+  76   1            a =((a&0xf0)>>4)|((b&0x0f)<<4) ;  // Lay phan nguyen cua gia tri nhiet do
+  77   1            temp=temp+a;
+  78   1            return temp;                      // Tra ve gia tri nhiet do
+  79   1      }
+  80          
+  81          // ------------------END OF FILE--------------------
+  82          // -------------------------------------------------
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    246    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

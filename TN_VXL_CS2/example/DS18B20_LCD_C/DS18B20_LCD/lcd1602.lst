@@ -1,0 +1,99 @@
+C51 COMPILER V9.54   LCD1602                                                               01/26/2016 16:42:08 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN lcd1602.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE LCD1602\lcd1602.c OPTIMIZE(8,SPEED) BROWSE INTVECTOR(0X2000) DEBUG OBJEC
+                    -TEXTEND PRINT(.\lcd1602.lst) TABS(2) OBJECT(lcd1602.obj)
+
+line level    source
+
+   1          
+   2          #include <regx52.h>
+   3          #include <DELAY\delay.h>
+   4          #include <LCD1602\lcd1602.h>
+   5          #include <DS1820\ds18b20.h>
+   6          
+   7          void write_cmd(char dat)
+   8          {
+   9   1        delay_ms(100);
+  10   1        LCD_RS=0; 
+  11   1        LCD = dat;
+  12   1        LCD_E = 1;
+  13   1        LCD_E = 0;
+  14   1      }
+  15          // --------------------------------------------------
+  16          // Ham Khoi Tao LCD
+  17           void lcd1602_init ( void )
+  18          { 
+  19   1        write_cmd(0x38);
+  20   1        write_cmd(0x0E);
+  21   1        write_cmd(0x01);
+  22   1      }
+  23          
+  24          // --------------------------------------------------
+  25          // Ham Thiet Lap Vi Tri Con Tro
+  26          void lcd1602_gotoxy(unsigned char x, unsigned char y)
+  27          {
+  28   1        unsigned char address;
+  29   1        if(!y)
+  30   1        address = (LINE_1+x);
+  31   1        else
+  32   1        address = (LINE_2+x);
+  33   1        delay_ms(3);
+  34   1        write_cmd(address);
+  35   1        delay_ms(1);
+  36   1      }
+  37          
+  38          // --------------------------------------------------
+  39          // Ham Xoa Man Hinh LCD
+  40          void lcd1602_clear(void)
+  41          {
+  42   1        write_cmd( CLEAR_LCD );  
+  43   1      }
+  44          
+  45          // --------------------------------------------------
+  46          // Ham Gui 1 Ky Tu Len LCD
+  47           void lcd1602_putchar ( unsigned int cX )
+  48          {
+  49   1        delay_us(100);
+  50   1        LCD_RS=1; 
+  51   1        LCD = cX;
+  52   1        LCD_E=1;
+  53   1        LCD_E=0;
+  54   1      }
+C51 COMPILER V9.54   LCD1602                                                               01/26/2016 16:42:08 PAGE 2   
+
+  55          
+  56          // --------------------------------------------------
+  57          // Ham Gui 1 Chuoi Ky Tu Len LCD
+  58          void lcd1602_puts(char *s)
+  59          {
+  60   1         while (*s)
+  61   1         {
+  62   2            lcd1602_putchar(*s);
+  63   2            s++;
+  64   2         }
+  65   1      }
+  66          // ------------------END OF FILE--------------------
+  67          // -------------------------------------------------
+  68          
+  69          
+  70          
+  71          
+  72          
+  73          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    139    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

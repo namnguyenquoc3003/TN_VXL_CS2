@@ -1,0 +1,8 @@
+"main.obj",
+"lcd1602.obj",
+"delay.obj",
+"ds18b20.obj",
+"STARTUP.obj" 
+TO "ds18b20" 
+RAMSIZE(256) 
+CODE( 0X2000-0XFFFF )

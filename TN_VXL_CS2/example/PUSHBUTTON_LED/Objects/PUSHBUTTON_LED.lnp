@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj" 
+TO ".\Objects\PUSHBUTTON_LED" 
+PRINT(".\Listings\PUSHBUTTON_LED.m51") RAMSIZE(256) 
+CODE( 0X2000-0XFFFF )
